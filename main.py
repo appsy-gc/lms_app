@@ -1,8 +1,12 @@
 # Import packages
 import os
 from flask import Flask
+
 # Import from init.py
 from init import db, ma
+
+# Import blueprint from cli_controller
+from controllers.cli_controller import Blueprint, db_commands
 
 def create_app():
     # Initialise
@@ -14,5 +18,7 @@ def create_app():
 
     db.init_app(app)
     ma.init_app(app)
+
+    app.register_blueprint(db_commands)
 
     return app

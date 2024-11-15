@@ -14,3 +14,4 @@ class StudentSchema(ma.Schema):
 
 student_schema = StudentSchema()
 students_schema = StudentSchema(many=True)
+
