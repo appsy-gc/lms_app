@@ -7,6 +7,7 @@ from init import db, ma
 
 # Import blueprint from cli_controller
 from controllers.cli_controller import Blueprint, db_commands
+from controllers.student_controller import students_bp
 
 def create_app():
     # Initialise
@@ -20,5 +21,6 @@ def create_app():
     ma.init_app(app)
 
     app.register_blueprint(db_commands)
+    app.register_blueprint(students_bp)
 
     return app
