@@ -8,6 +8,8 @@ def create_app():
     # Initialise
     app = Flask(__name__)
 
+    print("Server Started...")
+
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URI")
 
     db.init_app(app)
