@@ -61,20 +61,31 @@ def create_student():
 # Update - /students/id - PUT or PATCH
 @students_bp.route("/<int:student_id>", methods=["PUT", "PATCH"])
 def update_student(student_id):
-     stmt = db.select(Student).filter_by(id=student_id)
-     student = db.session.scalar(stmt)
-     body_data = request.get_json()
+     try:
+        # Find the student with specific ID
+        stmt = db.select(Student).filter_by(id=student_id)
+        student = db.session.scalar(stmt)
+        # Get the data to be updated
+        body_data = request.get_json()
 
-     if student:
-          # Update with new data or use existing if new data not provided
-          student.name = body_data.get("name") or student.name
-          student.email = body_data.get("email") or student.email
-          student.address = body_data.get("address") or student.address
-          db.session.commit()
-          return StudentSchema().dump(student)
-     else:
-          # Error message if student doesn't exist
-          return {"message": f"Student with id: {student_id} does not exist"}, 404
+        if student:
+            # Update with new data or use existing if new data not provided
+            student.name = body_data.get("name") or student.name
+            student.email = body_data.get("email") or student.email
+            student.address = body_data.get("address") or student.address
+            # Commit
+            db.session.commit()
+            # Return updated data
+            return StudentSchema().dump(student)
+        else:
+            # Error message if student doesn't exist
+            return {"message": f"Student with id: {student_id} does not exist"}, 404
+     except IntegrityError as err:
+          print(err.orig.pgcode)
+          if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
+                 # unique_constraint_violoation
+                 return {"message": "Email already exists."}, 409
+
 
 # Delete - /students/id - DELETE
 @students_bp.route("/<int:student_id>", methods=["DELETE"])
