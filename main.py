@@ -10,7 +10,7 @@ from controllers.cli_controller import Blueprint, db_commands
 # Import blueprint from student_controller
 from controllers.student_controller import students_bp
 # Import blueprint from teacher_controller
-
+from controllers.teacher_controller import teachers_bp
 # Import blueprint from subject_controller
 
 def create_app():
@@ -31,6 +31,7 @@ def create_app():
     # Register student_controller 
     app.register_blueprint(students_bp)
     # Register teacher_controller
+    app.register_blueprint(teachers_bp)
 
     # Register subject_controller
 
