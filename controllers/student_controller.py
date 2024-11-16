@@ -1,6 +1,10 @@
 from flask import Blueprint, request
 from init import db
 from models.student import Student, StudentSchema
+# Import specific exception type from SQLAlcemy
+from sqlalchemy.exc import IntegrityError
+# Import error codes so we don't have to remember them
+from psycopg2 import errorcodes
 
 students_bp = Blueprint("students", __name__, url_prefix="/students")
 
@@ -28,19 +32,31 @@ def get_student(student_id):
 # Create - /students - POST
 @students_bp.route("/", methods=["POST"])
 def create_student():
-      # Get information from request body
-      body_data = request.get_json()
-      # Create student instance
-      new_student = Student(
-           name = body_data.get("name"),
-           email = body_data.get("email"),
-           address = body_data.get("address")
-      )
-      # Add new student data
-      db.session.add(new_student)
-      # Commit changes
-      db.session.commit()
-      return StudentSchema().dump(new_student), 201
+      # Try Except block to handle error when the same student is added
+      try:
+        # Get information from request body
+        body_data = request.get_json()
+        # Create student instance
+        new_student = Student(
+            name = body_data.get("name"),
+            email = body_data.get("email"),
+            address = body_data.get("address")
+        )
+        # Add new student data
+        db.session.add(new_student)
+        # Commit changes
+        db.session.commit()
+        return StudentSchema().dump(new_student), 201
+      except IntegrityError as err:
+           print(err.orig.pgcode)
+           if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
+                # not_null_violoation
+                # Return specific field that is in violoation
+                return {"message": f"The field '{err.orig.diag.column_name}' is required"}, 409
+           if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
+                 # unique_constraint_violoation
+                 return {"message": "Data already exists. Update student details instead"}, 409
+
 
 # Update - /students/id - PUT or PATCH
 @students_bp.route("/<int:student_id>", methods=["PUT", "PATCH"])
