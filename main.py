@@ -7,7 +7,11 @@ from init import db, ma
 
 # Import blueprint from cli_controller
 from controllers.cli_controller import Blueprint, db_commands
+# Import blueprint from student_controller
 from controllers.student_controller import students_bp
+# Import blueprint from teacher_controller
+
+# Import blueprint from subject_controller
 
 def create_app():
     # Initialise
@@ -17,10 +21,17 @@ def create_app():
 
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URI")
 
+    # Initialise SQLAlcemy
     db.init_app(app)
+    # Initilise Marshmallow
     ma.init_app(app)
 
+    # Register cli_controller 
     app.register_blueprint(db_commands)
+    # Register student_controller 
     app.register_blueprint(students_bp)
+    # Register teacher_controller
+
+    # Register subject_controller
 
     return app
