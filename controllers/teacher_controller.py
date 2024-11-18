@@ -11,11 +11,19 @@ teachers_bp = Blueprint("teachers", __name__, url_prefix="/teachers")
 # Read all - /teachers - GET
 @teachers_bp.route("/")
 def get_teachers():
-    stmt = db.select(Teacher)
+    # Get department from browser link /teachers?department=department
+    department = request.args.get("department")
+    # If department is given, filter teachers by department
+    if department:
+         stmt = db.select(Teacher).filter_by(department=department)
+    # If department not give, give all teachers in db
+    else:
+        stmt = db.select(Teacher)
+
     teachers_list = db.session.scalars(stmt)
     data = TeacherSchema(many=True).dump(teachers_list)
-
     return data
+
 
 # Read one - /teachers/id - GET
 @teachers_bp.route("/<int:teacher_id>")
