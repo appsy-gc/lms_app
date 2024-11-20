@@ -15,10 +15,12 @@ def get_teachers():
     department = request.args.get("department")
     # If department is given, filter teachers by department
     if department:
-         stmt = db.select(Teacher).filter_by(department=department)
+         # Order_by can be added to sort by id, or another attribute
+         stmt = db.select(Teacher).filter_by(department=department).order_by(Teacher.id)
     # If department not give, give all teachers in db
     else:
-        stmt = db.select(Teacher)
+        # Order_by can be added to sort by id, or another attribute
+        stmt = db.select(Teacher).order_by(Teacher.id)
 
     teachers_list = db.session.scalars(stmt)
     data = TeacherSchema(many=True).dump(teachers_list)
