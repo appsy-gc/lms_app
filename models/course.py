@@ -6,7 +6,7 @@ class Course(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
     duration = db.Column(db.Float, nullable=False)
-    # Set up foreign key from the teachers model
+    # Set up foreign key from the teachers table (not the model)
     teacher_id = db.Column(db.Integer, db.ForeignKey("teachers.id"))
 
 class CourseSchema(ma.Schema):

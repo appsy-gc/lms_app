@@ -3,6 +3,7 @@ from flask import Blueprint
 from init import db
 from models.student import Student
 from models.teacher import Teacher
+from models.course import Course
 
 db_commands = Blueprint("db", __name__)
 
@@ -45,7 +46,35 @@ def seed_tables():
         )
     ]
 
-    db.session.add_all(students)
+    # If using foreign keys, ensure primary key is added and committed so it's available
     db.session.add_all(teachers)
+    db.session.commit()
+
+    courses = [
+        Course(
+            name = "Course 1",
+            duration = 1,
+            # Refers to the teachers created above
+            teacher_id = teachers[0].id
+        ),
+        Course(
+            name = "Course 2",
+            duration = 2,
+            teacher_id = teachers[0].id
+        ),
+        Course(
+            name = "Course 3",
+            duration = 1.5,
+            teacher_id = teachers[1].id
+        ),
+        Course(
+            name = "Course 4",
+            duration = 3,
+            teacher_id = teachers[1].id
+        )
+    ]
+
+    db.session.add_all(students)
+    db.session.add_all(courses)
     db.session.commit()
     print("Tables impregnated")
