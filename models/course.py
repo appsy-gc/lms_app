@@ -1,4 +1,5 @@
 from init import db, ma
+from marshmallow import fields
 
 class Course(db.Model):
     __tablename__ = "courses"
@@ -8,10 +9,16 @@ class Course(db.Model):
     duration = db.Column(db.Float, nullable=False)
     # Set up foreign key from the teachers table (not the model)
     teacher_id = db.Column(db.Integer, db.ForeignKey("teachers.id"))
+    # Must refer to the teachers model, not table
+    teacher = db.relationship("Teacher", back_populates="courses") # One teacher can have multiple courses
 
 class CourseSchema(ma.Schema):
+    # Order data in output as shown below, rather than alphabetically which is default
+    ordered=True
+    # Tell marshmallow how to seralise the data from teacher table
+    teacher = fields.Nested("TeacherSchema", only=["name", "department"])
     class Meta:
-        fields = ("id", "name", "duration", "teacher_id")
+        fields = ("id", "name", "duration", "teacher_id", "teacher")
 
 course_schema = CourseSchema()
 courses_schema = CourseSchema(many=True)

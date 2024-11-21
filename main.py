@@ -11,7 +11,8 @@ from controllers.cli_controller import Blueprint, db_commands
 from controllers.student_controller import students_bp
 # Import blueprint from teacher_controller
 from controllers.teacher_controller import teachers_bp
-# Import blueprint from subject_controller
+# Import blueprint from course_controller
+from controllers.course_controller import courses_bp
 
 def create_app():
     # Initialise
@@ -20,6 +21,9 @@ def create_app():
     print("Server Started...")
 
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URI")
+
+    # Stop flask from ordering data
+    app.json.sort_keys = False
 
     # Initialise SQLAlcemy
     db.init_app(app)
@@ -32,7 +36,7 @@ def create_app():
     app.register_blueprint(students_bp)
     # Register teacher_controller
     app.register_blueprint(teachers_bp)
-
-    # Register subject_controller
+    # Register course_controller
+    app.register_blueprint(courses_bp)
 
     return app
