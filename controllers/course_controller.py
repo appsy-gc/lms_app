@@ -21,11 +21,10 @@ def get_courses():
 @courses_bp.route("/<int:course_id>")
 def get_course(course_id):
         stmt = db.select(Course).filter_by(id=course_id)
-        Course = db.session.scalar(stmt)
+        course = db.session.scalar(stmt)
 
-        if Course:
-            data = CourseSchema().dump(Course)
-            return data
+        if course:
+            return CourseSchema().dump(course)
         else:
             return {"message": f"Course with id: {course_id} does not exist, soz chump"}, 404
 

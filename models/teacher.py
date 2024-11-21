@@ -13,6 +13,7 @@ class Teacher(db.Model):
 
 class TeacherSchema(ma.Schema):
     ordered = True
+    # Use fields.List for plural variables (e.g., 'courses', not 'teacher')
     courses = fields.List(fields.Nested("CourseSchema", exclude=["teacher", "id"]))
     class Meta:
         fields = ("id", "name", "department", "address", "courses")
