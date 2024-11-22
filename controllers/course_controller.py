@@ -30,22 +30,22 @@ def get_course(course_id):
 
 # Create - /courses - POST
 @courses_bp.route("/", methods=["POST"])
-def create_teacher():
-      # Try Except block to handle error when the same student is added
+def create_course():
+      # Try Except block to handle error when the same course is added
       try:
         # Get information from request body
         body_data = request.get_json()
-        # Create student instance
-        new_teacher = Teacher(
+        # Create course instance
+        new_course = Course(
             name = body_data.get("name"),
-            department = body_data.get("department"),
-            address = body_data.get("address")
+            duration = body_data.get("duration"),
+            teacher_id = body_data.get("teacher_id")
         )
-        # Add new student data
-        db.session.add(new_teacher)
+        # Add new course data
+        db.session.add(new_course)
         # Commit changes
         db.session.commit()
-        return CourseSchema().dump(new_teacher), 201
+        return CourseSchema().dump(new_course), 201
       except IntegrityError as err:
            print(err.orig.pgcode)
            if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
@@ -54,7 +54,7 @@ def create_teacher():
                 return {"message": f"The field '{err.orig.diag.column_name}' is required"}, 409
            if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
                  # unique_constraint_violoation
-                 return {"message": "Data already exists. Update teacher details instead"}, 409
+                 return {"message": "Data already exists. Update course details instead"}, 409
 
 
 # Update - /teachers/id - PUT or PATCH
