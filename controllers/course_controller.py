@@ -57,38 +57,38 @@ def create_course():
                  return {"message": "Data already exists. Update course details instead"}, 409
 
 
-# Update - /teachers/id - PUT or PATCH
-@courses_bp.route("/<int:teacher_id>", methods=["PUT", "PATCH"])
-def update_teacher(teacher_id):
-    # Find the student with specific ID
-    stmt = db.select(Teacher).filter_by(id=teacher_id)
-    teacher = db.session.scalar(stmt)
+# Update - /courses/id - PUT or PATCH
+@courses_bp.route("/<int:course_id>", methods=["PUT", "PATCH"])
+def update_course(course_id):
+    # Find the course with specific ID
+    stmt = db.select(Course).filter_by(id=course_id)
+    course = db.session.scalar(stmt)
     # Get the data to be updated
     body_data = request.get_json()
 
-    if teacher:
+    if course:
         # Update with new data or use existing if new data not provided
-        teacher.name = body_data.get("name") or teacher.name
-        teacher.department = body_data.get("department") or teacher.department
-        teacher.address = body_data.get("address") or teacher.address
+        course.name = body_data.get("name") or course.name
+        course.duration = body_data.get("duration") or course.duration
+        course.teacher_id = body_data.get("teacher_id") or course.teacher_id
         # Commit
         db.session.commit()
         # Return updated data
-        return CourseSchema().dump(teacher)
+        return CourseSchema().dump(course)
     else:
-        # Error message if student doesn't exist
-        return {"message": f"Teacher with id: {teacher_id} does not exist"}, 404
+        # Error message if course doesn't exist
+        return {"message": f"Course with id: {course_id} does not exist"}, 404
 
 
-# Delete - /teachers/id - DELETE
-@courses_bp.route("/<int:teacher_id>", methods=["DELETE"])
-def delete_teacher(teacher_id):
-     stmt = db.select(Teacher).filter_by(id=teacher_id)
-     teacher = db.session.scalar(stmt)
+# Delete - /courses/id - DELETE
+@courses_bp.route("/<int:course_id>", methods=["DELETE"])
+def delete_course(course_id):
+     stmt = db.select(Course).filter_by(id=course_id)
+     course = db.session.scalar(stmt)
 
-     if teacher:
-          db.session.delete(teacher)
+     if course:
+          db.session.delete(course)
           db.session.commit()
-          return {"message": f"teacher: '{teacher.name}' deleted successfully"}
+          return {"message": f"course: '{course.name}' deleted successfully"}
      else:
-          return {"message": f"Teacher with id: '{teacher_id}' does not exist"}, 404
+          return {"message": f"Course with id: '{course_id}' does not exist"}, 404
