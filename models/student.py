@@ -1,4 +1,5 @@
 from init import db, ma
+from marshmallow import fields
 
 class Student(db.Model):
     __tablename__ = "students"
@@ -8,7 +9,10 @@ class Student(db.Model):
     email = db.Column(db.String(100), nullable=False, unique=True)
     address = db.Column(db.String(100), nullable=False)
 
+    enrolments = db.relationship("Enrolment", back_populates="student", cascade="all, delete")
+
 class StudentSchema(ma.Schema):
+    enrolments = fields.List(fields.Nested("EnrolmentSchema", exclude=["student"]))
     class Meta:
         fields = ("id", "name", "email", "address")
 

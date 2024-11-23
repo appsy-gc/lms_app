@@ -13,6 +13,7 @@ from controllers.student_controller import students_bp
 from controllers.teacher_controller import teachers_bp
 # Import blueprint from course_controller
 from controllers.course_controller import courses_bp
+# Import blueprint from enrolments_controler
 
 def create_app():
     # Initialise
@@ -38,5 +39,6 @@ def create_app():
     app.register_blueprint(teachers_bp)
     # Register course_controller
     app.register_blueprint(courses_bp)
+    # Register enrolment_controller
 
     return app
