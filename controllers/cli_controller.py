@@ -4,6 +4,7 @@ from init import db
 from models.student import Student
 from models.teacher import Teacher
 from models.course import Course
+from models.enrolment import Enrolment
 
 db_commands = Blueprint("db", __name__)
 
@@ -74,7 +75,26 @@ def seed_tables():
         )
     ]
 
+    enrolments = [
+        Enrolment(
+            enrolment_date = "2024-11-23",
+            student = students[0],
+            course = courses[0]
+        ),
+        Enrolment(
+            enrolment_date = "2024-11-23",
+            student = students[1],
+            course = courses[0]
+        ),
+        Enrolment(
+            enrolment_date = "2024-11-23",
+            student = students[1],
+            course = courses[1]
+        )
+    ]
+
     db.session.add_all(students)
     db.session.add_all(courses)
+    db.session.add_all(enrolments)
     db.session.commit()
     print("Tables impregnated")
