@@ -52,6 +52,21 @@ def create_enrolment():
                 return {"message": "Data already exists. Update details instead"}, 409
 
 # PUT or PATCH an enrolment (/enrolments/enrolment_id)
+@enrolments_bp.route("/<int:enrolment_id>", methods=["PUT", "PATCH"])
+def update_enrolment(enrolment_id):
+     stmt = db.select(Enrolment).filter_by(id=enrolment_id)
+     enrolment = db.session.scalar(stmt)
+     body_data = request.get_json()
+
+     if enrolment:
+          enrolment.enrolment_date = body_data.get("enrolment_date") or enrolment.enrolment_date
+          enrolment.student_id = body_data.get("student_id") or enrolment.student_id
+          enrolment.course = body_data.get("course") or enrolment.course
+          db.session.commit()
+          return EnrolmentSchema().dump(enrolment)
+     else:
+          {"message": f"Enrolment with id '{enrolment.id}' does not exist"}, 404
+          
 
 
 # DELETE an enrolment (/enrolments)
