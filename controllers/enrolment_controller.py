@@ -11,7 +11,13 @@ enrolments_bp = Blueprint("enrolments", __name__, url_prefix="/enrolments")
 # GET all enrolments (/enrolments)
 @enrolments_bp.route("/")
 def get_enrolments():
-    stmt = db.select(Enrolment).order_by(Enrolment.id)
+    student_id = request.args.get("student_id")
+
+    if student_id:
+         stmt = db.select(Enrolment).filter_by(student_id=student_id)
+    else:
+        stmt = db.select(Enrolment).order_by(Enrolment.id)
+        
     enrolment_list = db.session.scalars(stmt)
     return EnrolmentSchema(many=True).dump(enrolment_list)
 
