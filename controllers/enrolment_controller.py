@@ -8,6 +8,7 @@ from psycopg2 import errorcodes
 
 enrolments_bp = Blueprint("enrolments", __name__, url_prefix="/enrolments")
 
+
 # GET all enrolments (/enrolments)
 @enrolments_bp.route("/")
 def get_enrolments():
@@ -17,9 +18,10 @@ def get_enrolments():
          stmt = db.select(Enrolment).filter_by(student_id=student_id)
     else:
         stmt = db.select(Enrolment).order_by(Enrolment.id)
-        
+
     enrolment_list = db.session.scalars(stmt)
     return EnrolmentSchema(many=True).dump(enrolment_list)
+
 
 # GET an enrolment (/enrolments/course_id)
 @enrolments_bp.route("/<int:enrolment_id>")
@@ -46,7 +48,7 @@ def create_enrolment():
         )
         db.session.add(new_enrolment)
         db.session.commit()
-        return EnrolmentSchema().dump(new_enrolment), 401
+        return EnrolmentSchema().dump(new_enrolment), 201
     except IntegrityError as err:
         print(err.orig.pgcode)
         if err.orig.pgcode == errorcodes.NOT_NULL_VIOLATION:
@@ -56,6 +58,7 @@ def create_enrolment():
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
                 # unique_constraint_violoation
                 return {"message": "Data already exists. Update details instead"}, 409
+
 
 # PUT or PATCH an enrolment (/enrolments/enrolment_id)
 @enrolments_bp.route("/<int:enrolment_id>", methods=["PUT", "PATCH"])
