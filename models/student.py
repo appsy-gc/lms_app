@@ -2,6 +2,7 @@ from init import db, ma
 from marshmallow import fields
 from marshmallow.validate import OneOf
 
+# List of valid address for address validation
 VALID_ADDRESSES = ("Sydney", "Melbourne", "Brisbane", "Adelaide")
 
 class Student(db.Model):
