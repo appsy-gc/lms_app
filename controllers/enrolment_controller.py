@@ -56,8 +56,8 @@ def create_enrolment():
             # Return specific field that is in violoation
             return {"message": f"The field '{err.orig.diag.column_name}' is required"}, 409
         if err.orig.pgcode == errorcodes.UNIQUE_VIOLATION:
-                # unique_constraint_violoation
-                return {"message": "Data already exists. Update details instead"}, 409
+            # unique_constraint_violoation
+            return {"message": err.orig.diag.message_detail}, 409
 
 
 # PUT or PATCH an enrolment (/enrolments/enrolment_id)

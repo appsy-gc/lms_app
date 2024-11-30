@@ -1,5 +1,8 @@
 from init import db, ma
 from marshmallow import fields
+from marshmallow.validate import OneOf
+
+VALID_ADDRESSES = ("Sydney", "Melbourne", "Brisbane", "Adelaide")
 
 class Student(db.Model):
     __tablename__ = "students"
@@ -12,6 +15,8 @@ class Student(db.Model):
     enrolments = db.relationship("Enrolment", back_populates="student", cascade="all, delete")
 
 class StudentSchema(ma.Schema):
+    address = fields.String(validate=OneOf(VALID_ADDRESSES))
+
     enrolments = fields.List(fields.Nested("EnrolmentSchema", exclude=["student"]))
     class Meta:
         fields = ("id", "name", "email", "address")

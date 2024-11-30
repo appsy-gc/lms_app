@@ -35,7 +35,7 @@ def create_student():
       # Try Except block to handle error when the same student is added
       try:
         # Get information from request body
-        body_data = request.get_json()
+        body_data = StudentSchema().load(request.get_json())
         # Create student instance
         new_student = Student(
             name = body_data.get("name"),
@@ -66,7 +66,7 @@ def update_student(student_id):
         stmt = db.select(Student).filter_by(id=student_id)
         student = db.session.scalar(stmt)
         # Get the data to be updated
-        body_data = request.get_json()
+        body_data = StudentSchema().load(request.get_json())
 
         if student:
             # Update with new data or use existing if new data not provided

@@ -1,6 +1,7 @@
 # Import packages
 import os
 from flask import Flask
+from marshmallow.exceptions import ValidationError
 
 # Import from init.py
 from init import db, ma
@@ -31,6 +32,11 @@ def create_app():
     db.init_app(app)
     # Initilise Marshmallow
     ma.init_app(app)
+
+    # Glogal error handling by marshmallow
+    @app.errorhandler(ValidationError)
+    def validation_error(err):
+        return {"message": err.messages}, 400
 
     # Register cli_controller 
     app.register_blueprint(db_commands)

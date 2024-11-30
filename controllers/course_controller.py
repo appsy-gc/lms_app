@@ -33,8 +33,8 @@ def get_course(course_id):
 def create_course():
       # Try Except block to handle error when the same course is added
       try:
-        # Get information from request body
-        body_data = request.get_json()
+        # Get information from request body and use 'CourseSchema().load' to use marshmallow validation in the course model
+        body_data = CourseSchema().load(request.get_json())
         # Create course instance
         new_course = Course(
             name = body_data.get("name"),
@@ -64,7 +64,9 @@ def update_course(course_id):
     stmt = db.select(Course).filter_by(id=course_id)
     course = db.session.scalar(stmt)
     # Get the data to be updated
-    body_data = request.get_json()
+        # 'CourseSchema().load to use marshmallow validation
+        # 'partial=True' bypasses the name being required if we want to just update one other field
+    body_data = CourseSchema().load(request.get_json(), partial=True)
 
     if course:
         # Update with new data or use existing if new data not provided

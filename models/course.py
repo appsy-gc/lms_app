@@ -1,5 +1,6 @@
 from init import db, ma
 from marshmallow import fields
+from marshmallow.validate import Length, And, Regexp
 
 class Course(db.Model):
     __tablename__ = "courses"
@@ -15,6 +16,12 @@ class Course(db.Model):
     enrolments = db.relationship("Enrolment", back_populates="course", cascade="all, delete")
 
 class CourseSchema(ma.Schema):
+    # Create validation for name length. Use 'And' for multiple validators
+    name = fields.String(required=True, validate=And(
+        Length(min=2, error="Name must be at least two characters long"),
+        Regexp(r'^[a-zA-Z0-9 ]+$', error="Only letters, numbers and spaces permitted")
+    ))
+
     # Order data in output as shown below, rather than alphabetically which is default
     ordered=True
     # Tell marshmallow how to seralise the data from teacher table
