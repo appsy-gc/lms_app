@@ -65,7 +65,7 @@ def create_enrolment():
 def update_enrolment(enrolment_id):
      stmt = db.select(Enrolment).filter_by(id=enrolment_id)
      enrolment = db.session.scalar(stmt)
-     body_data = EnrolmentSchema().load(request.get_json())
+     body_data = EnrolmentSchema().load(request.get_json(), partial=True)
 
      if enrolment:
           enrolment.enrolment_date = body_data.get("enrolment_date") or enrolment.enrolment_date
