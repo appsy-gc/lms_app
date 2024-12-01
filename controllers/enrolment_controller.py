@@ -39,12 +39,12 @@ def get_enrolment(enrolment_id):
 @enrolments_bp.route("/", methods=["POST"])
 def create_enrolment():
     try:
-        body_data = request.get_json()
+        body_data = EnrolmentSchema().load(request.get_json())
 
         new_enrolment = Enrolment(
             enrolment_date = body_data.get("enrolment_date"),
             student_id = body_data.get("student_id"),
-            course_id = body_data.get("course")
+            course_id = body_data.get("course_id")
         )
         db.session.add(new_enrolment)
         db.session.commit()
@@ -65,7 +65,7 @@ def create_enrolment():
 def update_enrolment(enrolment_id):
      stmt = db.select(Enrolment).filter_by(id=enrolment_id)
      enrolment = db.session.scalar(stmt)
-     body_data = request.get_json()
+     body_data = EnrolmentSchema().load(request.get_json())
 
      if enrolment:
           enrolment.enrolment_date = body_data.get("enrolment_date") or enrolment.enrolment_date
